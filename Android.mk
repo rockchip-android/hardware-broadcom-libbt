@@ -38,7 +38,8 @@ LOCAL_CFLAGS += $(bdroid_CFLAGS)
 
 LOCAL_SHARED_LIBRARIES := \
         libcutils \
-        liblog
+        liblog \
+	libhardware_legacy
 
 LOCAL_MODULE := libbt-vendor
 LOCAL_MODULE_TAGS := optional
@@ -65,5 +66,7 @@ endif
 ifeq ($(TARGET_PRODUCT), gce_x86_phone)
     include $(LOCAL_PATH)/conf/google/gce_x86/Android.mk
 endif
+
+    include $(LOCAL_PATH)/conf/rockchip/rk30sdk/Android.mk
 
 endif # BOARD_HAVE_BLUETOOTH_BCM
