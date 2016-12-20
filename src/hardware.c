@@ -53,7 +53,7 @@
 ******************************************************************************/
 
 #ifndef BTHW_DBG
-#define BTHW_DBG FALSE
+#define BTHW_DBG TRUE
 #endif
 
 #if (BTHW_DBG == TRUE)
@@ -232,7 +232,7 @@ static uint8_t bt_sco_i2spcm_param[SCO_I2SPCM_PARAM_SIZE] =
 static const fw_settlement_entry_t fw_settlement_table[] = {
     {"BCM43241", 200},
     {"BCM43341", 100},
-    {(const char *) NULL, 100}  // Giving the generic fw settlement delay setting.
+    {(const char *) NULL, 200}  // Giving the generic fw settlement delay setting.
 };
 
 
@@ -490,6 +490,8 @@ static uint8_t hw_config_findpatch(char *p_chip_id_str)
             sprintf(p_chip_id_str, "bcm43241b4");
         else if (!strcmp(p_chip_id_str, "BCM4350C0"))
             sprintf(p_chip_id_str, "bcm4354a1");
+        else if (!strcmp(p_chip_id_str,"BCM4354A2"))
+            sprintf(p_chip_id_str, "BCM4356A2");
     }
     ALOGI("Target HCD file name is: %s.hcd", p_chip_id_str);
 
