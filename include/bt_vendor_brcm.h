@@ -97,7 +97,7 @@
  *  firmware patchram (.hcd) file.
  */
 #ifndef USE_CONTROLLER_BDADDR
-#define USE_CONTROLLER_BDADDR   FALSE
+#define USE_CONTROLLER_BDADDR   TRUE
 #endif
 
 /* sleep mode
