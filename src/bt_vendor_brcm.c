@@ -142,7 +142,12 @@ static int op(bt_vendor_opcode_t opcode, void *param)
                 if (*state == BT_VND_PWR_OFF)
                     upio_set_bluetooth_power(UPIO_BT_POWER_OFF);
                 else if (*state == BT_VND_PWR_ON)
+                {
                     upio_set_bluetooth_power(UPIO_BT_POWER_ON);
+                    BTVNDDBG("Delay for a while after BT power on");
+                    usleep(200000);
+
+                }
             }
             break;
 

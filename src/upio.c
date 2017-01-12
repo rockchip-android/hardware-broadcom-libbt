@@ -338,8 +338,11 @@ int upio_set_bluetooth_power(int on)
         ALOGE("set_bluetooth_power : write(%s) failed: %s (%d)",
             rfkill_state_path, strerror(errno),errno);
     }
-    else
+    else {
         ret = 0;
+        ALOGD("Delay 500ms for bluetooth power up");
+        usleep(500*1000);
+    }
 
     if (fd >= 0)
         close(fd);
