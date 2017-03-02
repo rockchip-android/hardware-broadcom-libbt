@@ -158,6 +158,11 @@ typedef struct {
     const uint32_t delay_time;
 } fw_settlement_entry_t;
 
+/* AMPAK FW auto detection table */
+typedef struct {
+    char *chip_id;
+    char *updated_chip_id;
+} fw_auto_detection_entry_t;
 
 /******************************************************************************
 **  Externs
@@ -254,6 +259,25 @@ static uint8_t sco_bus_interface = SCO_INTERFACE_PCM;
 #define INVALID_SCO_CLOCK_RATE  0xFF
 static uint8_t sco_bus_clock_rate = INVALID_SCO_CLOCK_RATE;
 static uint8_t sco_bus_wbs_clock_rate = INVALID_SCO_CLOCK_RATE;
+
+#define FW_TABLE_VERSION "v1.1 20161117"
+static const fw_auto_detection_entry_t fw_auto_detection_table[] = {
+    {"4343A0","BCM43438A0"},    //AP6212
+    {"BCM43430A1","BCM43438A1"}, //AP6212A
+    {"BCM20702A","BCM20710A1"}, //AP6210B
+    {"BCM4335C0","BCM4339A0"}, //AP6335
+    {"BCM4330B1","BCM40183B2"}, //AP6330
+    {"BCM4324B3","BCM43241B4"}, //AP62X2
+    {"BCM4350C0","BCM4354A1"}, //AP6354
+    {"BCM4354A2","BCM4356A2"}, //AP6356
+//    {"BCM4345C0","BCM4345C0"}, //AP6255
+//    {"BCM43341B0","BCM43341B0"}, //AP6234
+//    {"BCM2076B1","BCM2076B1"}, //AP6476
+	{"BCM43430B0","BCM4343B0"}, //AP6236
+	{"BCM4359C0","BCM4359C0"},	//AP6359
+	{"BCM4349B1","BCM4359B1"},	//AP6359
+    {(const char *) NULL, NULL}
+}; 
 
 /******************************************************************************
 **  Static functions
@@ -438,6 +462,7 @@ static uint8_t hw_config_findpatch(char *p_chip_id_str)
     struct dirent *dp;
     int filenamelen;
     uint8_t retval = FALSE;
+    fw_auto_detection_entry_t *p_entry;
 
     BTHWDBG("Target name = [%s]", p_chip_id_str);
 
@@ -458,42 +483,18 @@ static uint8_t hw_config_findpatch(char *p_chip_id_str)
         ALOGI("FW patchfile: %s", p_chip_id_str);
         return TRUE;
     }
-
-    char bt_chip[64] = "";
-    extern int check_wifi_chip_type_string(char *type);
-
-    check_wifi_chip_type_string(bt_chip);
+    BTHWDBG("###AMPAK FW Auto detection patch version = [%s]###", FW_TABLE_VERSION);
+    p_entry = (fw_auto_detection_entry_t *)fw_auto_detection_table;
+    while (p_entry->chip_id != NULL)
     {
-        ALOGI("BT module name is: %s, p_chip_id_str = %s\n", bt_chip, p_chip_id_str);
-        if (!strcmp(bt_chip, "AP6330") || !strcmp(bt_chip, "AP6493"))
-            sprintf(p_chip_id_str, "bcm40183b2");
-        else if (!strcmp(bt_chip, "AP6476"))
-            sprintf(p_chip_id_str, "bcm2076b1");
-        else if (!strcmp(bt_chip, "AP6441") || !strcmp(bt_chip, "AP6234"))
-            sprintf(p_chip_id_str, "bcm43341b0");
-        else if (!strcmp(bt_chip, "awnb108"))
-            sprintf(p_chip_id_str, "awnb108");
-
-        // auto recognize
-        if (!strcmp(p_chip_id_str, "BCM20702A")) {
-            if (!strcmp(bt_chip, "AP6210_24M"))
-                sprintf(p_chip_id_str, "bcm20710a1_24M");
-            else
-                sprintf(p_chip_id_str, "bcm20710a1_26M");
-        } else if (!strcmp(p_chip_id_str, "4343A0"))
-            sprintf(p_chip_id_str, "bcm43438a0");
-        else if (!strcmp(p_chip_id_str, "BCM43430A1"))
-            sprintf(p_chip_id_str, "bcm43438a1");
-        else if (!strcmp(p_chip_id_str, "BCM4335C0"))
-            sprintf(p_chip_id_str, "bcm4339a0");
-        else if (!strcmp(p_chip_id_str, "BCM4324B3"))
-            sprintf(p_chip_id_str, "bcm43241b4");
-        else if (!strcmp(p_chip_id_str, "BCM4350C0"))
-            sprintf(p_chip_id_str, "bcm4354a1");
-        else if (!strcmp(p_chip_id_str,"BCM4354A2"))
-            sprintf(p_chip_id_str, "BCM4356A2");
+        if (strstr(p_chip_id_str, p_entry->chip_id)!=NULL)
+        {
+            strcpy(p_chip_id_str,p_entry->updated_chip_id);
+            break;
+        }
+        p_entry++;
     }
-    ALOGI("Target HCD file name is: %s.hcd", p_chip_id_str);
+    BTHWDBG("Updated Target name = [%s]", p_chip_id_str);
 
     if ((dirp = opendir(fw_patchfile_path)) != NULL)
     {
