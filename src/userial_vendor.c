@@ -318,7 +318,9 @@ void userial_vendor_set_baud(uint8_t userial_baud)
 {
     uint32_t tcio_baud;
 
-    usleep(200000); // solve ap6335 bt open fail in rk3366
+    if(USERIAL_VENDOR_SET_BAUD_DELAY_US > 0) {
+	usleep(USERIAL_VENDOR_SET_BAUD_DELAY_US);
+    }
 
     userial_to_tcio_baud(userial_baud, &tcio_baud);
 

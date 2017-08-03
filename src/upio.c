@@ -340,8 +340,6 @@ int upio_set_bluetooth_power(int on)
     }
     else {
         ret = 0;
-        ALOGD("Delay 500ms for bluetooth power up");
-        usleep(500*1000);
     }
 
     if (fd >= 0)

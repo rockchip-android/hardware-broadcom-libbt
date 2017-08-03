@@ -82,6 +82,14 @@
 #define FW_PATCH_SETTLEMENT_DELAY_MS          0
 #endif
 
+#ifndef USERIAL_VENDOR_SET_BAUD_DELAY_US
+#define USERIAL_VENDOR_SET_BAUD_DELAY_US	0
+#endif
+
+#ifndef FW_AUTO_DETECTION
+#define FW_AUTO_DETECTION	FALSE
+#endif
+
 /* The Bluetooth Device Aaddress source switch:
  *
  * -FALSE- (default value)
@@ -97,7 +105,7 @@
  *  firmware patchram (.hcd) file.
  */
 #ifndef USE_CONTROLLER_BDADDR
-#define USE_CONTROLLER_BDADDR   TRUE
+#define USE_CONTROLLER_BDADDR   FALSE
 #endif
 
 /* sleep mode
